@@ -1,0 +1,138 @@
+{
+  "kpis": {
+    "revenue": 4194377.6,
+    "orders": 753,
+    "aov": 5570.22,
+    "dq_issues": 0
+  },
+  "monthly": {
+    "month": [
+      "2024-01",
+      "2024-02",
+      "2024-03",
+      "2024-04",
+      "2024-05",
+      "2024-06",
+      "2024-07",
+      "2024-08",
+      "2024-09"
+    ],
+    "revenue": [
+      496490.1,
+      349323.95,
+      512286.7,
+      465153.0,
+      447776.25,
+      639606.7,
+      451761.45,
+      441770.9,
+      390208.55
+    ],
+    "orders": [
+      89,
+      72,
+      87,
+      80,
+      77,
+      109,
+      91,
+      82,
+      66
+    ],
+    "aov": [
+      5578.54,
+      4851.72,
+      5888.35,
+      5814.41,
+      5815.28,
+      5867.95,
+      4964.41,
+      5387.45,
+      5912.25
+    ]
+  },
+  "top_products": [
+    {
+      "product_id": 22,
+      "category": "Snacks",
+      "subcategory": "Premium",
+      "revenue": 203558.85
+    },
+    {
+      "product_id": 6,
+      "category": "Home",
+      "subcategory": "Premium",
+      "revenue": 184140.0
+    },
+    {
+      "product_id": 41,
+      "category": "Beverages",
+      "subcategory": "Budget",
+      "revenue": 163079.7
+    },
+    {
+      "product_id": 28,
+      "category": "Home",
+      "subcategory": "Premium",
+      "revenue": 155949.2
+    },
+    {
+      "product_id": 46,
+      "category": "Home",
+      "subcategory": "Budget",
+      "revenue": 139605.3
+    },
+    {
+      "product_id": 3,
+      "category": "Electronics",
+      "subcategory": "Budget",
+      "revenue": 134457.95
+    },
+    {
+      "product_id": 35,
+      "category": "Home",
+      "subcategory": "Organic",
+      "revenue": 132320.0
+    },
+    {
+      "product_id": 7,
+      "category": "Beverages",
+      "subcategory": "Organic",
+      "revenue": 131728.35
+    },
+    {
+      "product_id": 45,
+      "category": "Beverages",
+      "subcategory": "Standard",
+      "revenue": 130414.5
+    },
+    {
+      "product_id": 23,
+      "category": "Beverages",
+      "subcategory": "Budget",
+      "revenue": 128356.8
+    }
+  ],
+  "category": [
+    {
+      "category": "Home",
+      "revenue": 1420991.35,
+      "pct": 33.88
+    },
+    {
+      "category": "Electronics",
+      "revenue": 1063867.75,
+      "pct": 25.36
+    },
+    {
+      "category": "Beverages",
+      "revenue": 1032499.2,
+      "pct": 24.62
+    },
+    {
+      "category": "Snacks",
+      "revenue": 677019.3,
+      "pct": 16.14
+    }
+  ]
+}
