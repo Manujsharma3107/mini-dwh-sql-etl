@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.vscode/
+.DS_Store
+Thumbs.db
+dist/
+build/
+*.egg-info/
+.env
+.streamlit/secrets.toml
+# keep the demo DB
+#!01-mini-dwh-sql-etl/mini_dwh.sqlite
