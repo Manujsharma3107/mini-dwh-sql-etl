@@ -1,83 +1,140 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>E-commerce KPIs (Static)</title>
-<link rel="preconnect" href="https://cdn.plot.ly">
-<style>
-  :root { --blue:#1f77b4; --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --muted:#64748b; }
-  body { margin:0; font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text);}
-  .wrap { max-width:1100px; margin:auto; padding:24px; }
-  h1 { text-align:center; color:var(--blue); font-size:34px; margin:6px 0 12px; }
-  .sub { text-align:center; color:var(--muted); margin-bottom:18px; }
-  .grid { display:grid; gap:16px; }
-  .kpis { grid-template-columns: repeat(4, 1fr); }
-  .card { background:var(--card); border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
-  .label { color:var(--muted); font-size:13px; }
-  .value { font-size:24px; font-weight:800; }
-  .two { grid-template-columns:1fr 1fr; }
-  footer { margin-top:24px; text-align:center; color:var(--muted); font-size:14px; }
-  @media (max-width:900px) {
-    .kpis { grid-template-columns:1fr 1fr; }
-    .two  { grid-template-columns:1fr; }
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini Data Warehouse — E-commerce KPIs</title>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Plotly for charts -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --primary:#3b82f6;
+      --ring:#e2e8f0;
+      --shadow:0 4px 20px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    body{margin:0;background:var(--bg);color:var(--ink)}
+    .container{max-width:1200px;margin:0 auto;padding:28px 18px}
+    .hero{
+      background:linear-gradient(90deg,#f8fafc,#e2e8f0);
+      border-left:6px solid var(--primary);
+      border-radius:14px;padding:28px 24px;margin:6px 0 26px 0; box-shadow:0 2px 8px rgba(0,0,0,.04)
+    }
+    .title{font-size:32px;font-weight:800;letter-spacing:-.02em;text-align:center;margin:4px 0 8px}
+    .sub{color:var(--muted);text-align:center}
+    .grid{display:grid;gap:18px}
+    @media(min-width:860px){.grid.cols-2{grid-template-columns:1fr 1fr}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-4{grid-template-columns:repeat(4,1fr)}}
+
+    .card{background:var(--card);border:1px solid var(--ring);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    .metric{display:flex;flex-direction:column;gap:6px}
+    .metric-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .metric-value{font-size:28px;font-weight:800}
+    .metric-pill{width:48px;height:48px;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+    .pill-green{background:linear-gradient(135deg,#10b981,#059669)}
+    .pill-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+    .pill-amber{background:linear-gradient(135deg,#f59e0b,#d97706)}
+    .pill-violet{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+    .section{font-size:18px;font-weight:800;margin:22px 2px 10px}
+    .chart{height:380px}
+    .muted{color:var(--muted)}
+    .kpi-wrap{display:grid;gap:18px}
+    @media(min-width:860px){.kpi-wrap{grid-template-columns:repeat(4,1fr)}}
+  </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Mini Data Warehouse — E-commerce KPIs</h1>
-  <div class="sub">Static snapshot (instant load). Built from CSV/API → SQLite views.</div>
+  <div class="container">
+    <div class="hero">
+      <div class="title">Mini Data Warehouse — E-commerce KPIs</div>
+      <div class="sub">Static snapshot (instant load). Built from CSV/API → SQLite views.</div>
+    </div>
 
-  <div class="grid kpis">
-    <div class="card"><div class="label">Revenue</div><div class="value" id="rev">–</div></div>
-    <div class="card"><div class="label">Orders</div><div class="value" id="ord">–</div></div>
-    <div class="card"><div class="label">Average Order Value</div><div class="value" id="aov">–</div></div>
-    <div class="card"><div class="label">DQ Issues</div><div class="value" id="dq">–</div></div>
+    <!-- KPI cards -->
+    <div class="kpi-wrap">
+      <div class="card metric"><div class="metric-pill pill-green">💰</div><div class="metric-label">Revenue</div><div id="m-rev" class="metric-value">–</div></div>
+      <div class="card metric"><div class="metric-pill pill-blue">🛒</div><div class="metric-label">Orders</div><div id="m-ord" class="metric-value">–</div></div>
+      <div class="card metric"><div class="metric-pill pill-amber">📊</div><div class="metric-label">Average Order Value</div><div id="m-aov" class="metric-value">–</div></div>
+      <div class="card metric"><div class="metric-pill pill-violet">✅</div><div class="metric-label">DQ Issues</div><div id="m-dq" class="metric-value">–</div></div>
+    </div>
+
+    <div class="grid cols-2" style="margin-top: 18px;">
+      <div class="card">
+        <div class="section">Monthly KPIs</div>
+        <div id="chart-monthly" class="chart"></div>
+      </div>
+      <div class="card">
+        <div class="section">Top 10 Products by Revenue</div>
+        <div id="chart-top" class="chart"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="section">Category Contribution</div>
+      <div id="chart-cat" class="chart"></div>
+      <div class="muted" style="margin-top:8px">* Shares are computed from exported revenue totals.</div>
+    </div>
+
+    <p class="muted" style="margin-top:28px">© Data snapshot generated from your SQLite views; rendered as a static page for instant loading.</p>
   </div>
 
-  <div class="grid two" style="margin-top:16px;">
-    <div class="card"><div id="monthly" style="height:360px;"></div></div>
-    <div class="card"><div id="top" style="height:360px;"></div></div>
-  </div>
+  <script>
+    const fmt = n => n.toLocaleString('en-IN');
+    const money = n => '₹' + n.toLocaleString('en-IN');
 
-  <div class="card" style="margin-top:16px;"><div id="cat" style="height:360px;"></div></div>
+    async function main(){
+      const resp = await fetch('data.json');
+      const data = await resp.json();
 
-  <footer>Repo: GitHub → <a href="../" target="_blank">code</a> · Interactive app (may be slower): add link here</footer>
-</div>
+      // KPIs
+      document.getElementById('m-rev').textContent = money(Math.round(data.revenue || 0));
+      document.getElementById('m-ord').textContent = fmt(data.orders || 0);
+      document.getElementById('m-aov').textContent = money(Math.round(data.aov || 0));
+      document.getElementById('m-dq').textContent  = fmt(data.dq_issues || 0);
 
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script>
-fetch('data.json').then(r => r.json()).then(d => {
-  // KPI cards
-  const fmt = (n)=> Number(n).toLocaleString();
-  document.getElementById('rev').textContent = fmt(Math.round(d.kpis.revenue));
-  document.getElementById('ord').textContent = fmt(d.kpis.orders);
-  document.getElementById('aov').textContent = fmt(Math.round(d.kpis.aov));
-  document.getElementById('dq').textContent  = fmt(d.kpis.dq_issues);
+      // Monthly
+      const months   = data.monthly_kpis.map(d => d.month);
+      const rev      = data.monthly_kpis.map(d => d.revenue);
+      const orders   = data.monthly_kpis.map(d => d.orders);
 
-  // Monthly line (revenue + orders, twin axes)
-  const months = d.monthly.month, rev = d.monthly.revenue, ord = d.monthly.orders;
-  Plotly.newPlot('monthly', [
-    {x: months, y: rev, name:'Revenue', mode:'lines+markers'},
-    {x: months, y: ord, name:'Orders', mode:'lines+markers', yaxis:'y2'}
-  ], {
-    title:'Monthly KPIs', margin:{t:30,r:40,l:50,b:40},
-    yaxis:{title:'Revenue'}, yaxis2:{title:'Orders', overlaying:'y', side:'right'}
-  }, {displayModeBar:false, responsive:true});
+      const tr1 = { x: months, y: rev, name:'Revenue', type:'scatter', mode:'lines+markers', line:{width:3} };
+      const tr2 = { x: months, y: orders, name:'Orders', type:'bar', opacity:.35, marker:{line:{width:0}} };
 
-  // Top products bar
-  const tp = d.top_products, px = tp.map(t=>t.product_id), py = tp.map(t=>t.revenue);
-  Plotly.newPlot('top', [{x:px, y:py, type:'bar', name:'Revenue'}],
-    {title:'Top 10 Products by Revenue', margin:{t:30,r:10,l:40,b:80}, xaxis:{tickangle:-45}},
-    {displayModeBar:false, responsive:true});
+      Plotly.newPlot('chart-monthly', [tr1,tr2], {
+        margin:{l:40,r:20,t:10,b:40},
+        legend:{orientation:'h'},
+        yaxis:{title:'Revenue'},
+        xaxis:{type:'category'}
+      }, {displayModeBar:false, responsive:true});
 
-  // Category share pie
-  const cx = d.category.map(c=>c.category), cy = d.category.map(c=>c.revenue);
-  Plotly.newPlot('cat', [{labels: cx, values: cy, type:'pie', textinfo:'label+percent'}],
-    {title:'Category Contribution', margin:{t:30,r:10,l:10,b:10}},
-    {displayModeBar:false, responsive:true});
-});
-</script>
+      // Top products
+      const topX = data.top_products.map(d => d.product_id);
+      const topY = data.top_products.map(d => d.revenue);
+      Plotly.newPlot('chart-top', [{
+        x: topX, y: topY, type:'bar'
+      }], {
+        margin:{l:40,r:20,t:10,b:40},
+        xaxis:{title:'product_id'}, yaxis:{title:'revenue'}
+      }, {displayModeBar:false, responsive:true});
+
+      // Category contribution
+      const catL = data.category_contrib.map(d => d.category);
+      const catV = data.category_contrib.map(d => d.revenue);
+      Plotly.newPlot('chart-cat', [{
+        labels: catL, values: catV, type:'pie', hole:.45
+      }], {
+        margin:{l:20,r:20,t:10,b:20},
+        legend:{orientation:'h'}
+      }, {displayModeBar:false, responsive:true});
+    }
+    main();
+  </script>
 </body>
 </html>
