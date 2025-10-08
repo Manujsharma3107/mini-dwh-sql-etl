@@ -4,7 +4,11 @@ import sqlite3, json, pandas as pd
 BASE = Path(__file__).resolve().parent
 DB_PATH = BASE / "mini_dwh.sqlite"
 DOCS = BASE.parent / "docs"
-DOCS.mkdir(exist_ok=True)
+DOCS.mkdir(parents=True, exist_ok=True)
+
+
+# 👇 root/docs (one level UP from 01-mini-dwh-sql-etl/)
+
 
 # --- read from SQLite views (already created by your ETL)
 con = sqlite3.connect(DB_PATH)
