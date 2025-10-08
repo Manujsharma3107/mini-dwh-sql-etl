@@ -42,12 +42,6 @@ env/
 .ipynb_checkpoints
 *.ipynb
 
-# Database files (SQLite)
-*.sqlite
-*.sqlite3
-*.db
-mini_dwh.sqlite
-
 # Environment variables
 .env
 .env.local
