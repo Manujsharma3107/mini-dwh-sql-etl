@@ -12,19 +12,16 @@
 
 This project demonstrates a **complete data warehouse solution** for e-commerce analytics, from raw data ingestion to interactive dashboards. Think of it as a mini version of what companies like Amazon or Flipkart use to analyze their sales data.
 
-### **For Recruiters** 👔
 - Full-stack data engineering: ETL → Data Modeling → Analytics → Visualization
 - Production-ready code with data quality checks
 - Star schema design following Kimball methodology
 - Clean, maintainable, and documented code
 
-### **For Data Analysts** 📈
 - Interactive dashboard with filters for deep-dive analysis
 - Pre-built KPI views for monthly trends, top products, and category performance
 - SQL views for easy querying
 - Export capabilities for further analysis
 
-### **For Non-Technical Users** 🌟
 - Beautiful, easy-to-use dashboard
 - Click and explore sales data without writing any code
 - Download reports as CSV files
