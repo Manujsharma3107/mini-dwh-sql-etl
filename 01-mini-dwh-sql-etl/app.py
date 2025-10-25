@@ -1,11 +1,49 @@
 import os, sqlite3, pandas as pd, streamlit as st
+from pathlib import Path
 
-DB_PATH = "mini_dwh.sqlite"
+# --- Robust DB path (absolute, next to this file) ---
+BASE_DIR = Path(__file__).resolve().parent
+DB_PATH = str(BASE_DIR / "mini_dwh.sqlite")
 
-# Build DB on first run
-if not os.path.exists(DB_PATH):
+
+# --- Helper: does the DB already have our tables? ---
+def _db_has_schema(db_path: str) -> bool:
+    try:
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
+        cur.execute(
+            """
+            SELECT name
+            FROM sqlite_master
+            WHERE type='table'
+              AND name IN ('fact_sales','dim_product','dim_customer')
+            """
+        )
+        rows = cur.fetchall()
+        con.close()
+        # Expecting at least these 3 tables after ETL
+        return len(rows) >= 3
+    except Exception:
+        return False
+
+
+# Build DB on first run (or when schema is missing)
+if not _db_has_schema(DB_PATH):
     import etl_pipeline as etl
-    etl.make_synthetic(); etl.fetch_api_sample(); etl.load_to_sqlite()
+
+    etl.make_synthetic()
+    etl.fetch_api_sample()
+    etl.load_to_sqlite()
+    # Clear any cached queries and rerun once so the new tables are visible
+    try:
+        st.cache_data.clear()
+    except Exception:
+        pass
+    try:
+        st.rerun()
+    except Exception:
+        pass
+
 
 @st.cache_data
 def sql_df(query: str) -> pd.DataFrame:
@@ -13,6 +51,7 @@ def sql_df(query: str) -> pd.DataFrame:
     df = pd.read_sql(query, con)
     con.close()
     return df
+
 
 # ============ PREMIUM CONFIGURATION ============
 st.set_page_config(
