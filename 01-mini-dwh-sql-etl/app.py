@@ -500,13 +500,24 @@ with d2:
 # ============ RAW DATA ============
 
 DATA_DIR = BASE_DIR / "data"
+DATA_DIR.mkdir(exist_ok=True)  # ensure folder exists
+
+orders_path = DATA_DIR / "orders.csv"
+items_path = DATA_DIR / "order_items.csv"
+
+# --- Generate CSVs automatically if missing ---
+import etl_pipeline as etl
+
+if not orders_path.exists() or not items_path.exists():
+    etl.make_synthetic()  # this should create orders.csv & order_items.csv in DATA_DIR
+    etl.fetch_api_sample()
+    etl.load_to_sqlite()
 
 with st.expander("🔍 View Raw Data Samples"):
     tab1, tab2, tab3 = st.tabs(["📦 Orders", "📋 Order Items", "📊 Fact Table"])
     
     # --- Orders ---
     with tab1:
-        orders_path = DATA_DIR / "orders.csv"
         if orders_path.exists():
             raw_orders = pd.read_csv(orders_path, nrows=20, parse_dates=["order_date"])
             st.dataframe(raw_orders, use_container_width=True, height=400)
@@ -521,7 +532,6 @@ with st.expander("🔍 View Raw Data Samples"):
 
     # --- Order Items ---
     with tab2:
-        items_path = DATA_DIR / "order_items.csv"
         if items_path.exists():
             raw_items = pd.read_csv(items_path, nrows=20)
             st.dataframe(raw_items, use_container_width=True, height=400)
@@ -541,6 +551,7 @@ with st.expander("🔍 View Raw Data Samples"):
             st.dataframe(fact_sample, use_container_width=True, height=400)
         except Exception as e:
             st.error(f"Error fetching fact table: {e}")
+
 
 
 # ============ DATA QUALITY ============
