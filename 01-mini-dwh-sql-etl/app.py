@@ -498,22 +498,50 @@ with d2:
     st.download_button("🏆 Download Top Products (CSV)", top_f.to_csv(index=False), "top_products.csv", "text/csv")
 
 # ============ RAW DATA ============
+
+DATA_DIR = BASE_DIR / "data"
+
 with st.expander("🔍 View Raw Data Samples"):
     tab1, tab2, tab3 = st.tabs(["📦 Orders", "📋 Order Items", "📊 Fact Table"])
     
+    # --- Orders ---
     with tab1:
-        raw_orders = pd.read_csv("data/orders.csv", nrows=20, parse_dates=["order_date"])
-        st.dataframe(raw_orders, use_container_width=True, height=400)
-        st.download_button("Download full orders.csv", open("data/orders.csv", "rb"), "orders.csv", "text/csv")
-    
+        orders_path = DATA_DIR / "orders.csv"
+        if orders_path.exists():
+            raw_orders = pd.read_csv(orders_path, nrows=20, parse_dates=["order_date"])
+            st.dataframe(raw_orders, use_container_width=True, height=400)
+            st.download_button(
+                "Download full orders.csv",
+                orders_path.open("rb"),
+                "orders.csv",
+                "text/csv"
+            )
+        else:
+            st.error(f"File not found: {orders_path}")
+
+    # --- Order Items ---
     with tab2:
-        raw_items = pd.read_csv("data/order_items.csv", nrows=20)
-        st.dataframe(raw_items, use_container_width=True, height=400)
-        st.download_button("Download full order_items.csv", open("data/order_items.csv", "rb"), "order_items.csv", "text/csv")
-    
+        items_path = DATA_DIR / "order_items.csv"
+        if items_path.exists():
+            raw_items = pd.read_csv(items_path, nrows=20)
+            st.dataframe(raw_items, use_container_width=True, height=400)
+            st.download_button(
+                "Download full order_items.csv",
+                items_path.open("rb"),
+                "order_items.csv",
+                "text/csv"
+            )
+        else:
+            st.error(f"File not found: {items_path}")
+
+    # --- Fact Table ---
     with tab3:
-        fact_sample = sql_df("SELECT * FROM fact_sales LIMIT 20;")
-        st.dataframe(fact_sample, use_container_width=True, height=400)
+        try:
+            fact_sample = sql_df("SELECT * FROM fact_sales LIMIT 20;")
+            st.dataframe(fact_sample, use_container_width=True, height=400)
+        except Exception as e:
+            st.error(f"Error fetching fact table: {e}")
+
 
 # ============ DATA QUALITY ============
 with st.expander("✅ Data Quality Monitoring"):
@@ -532,3 +560,4 @@ with st.expander("✅ Data Quality Monitoring"):
         st.success("✅ All data quality checks passed!")
     else:
         st.warning(f"⚠️ Found {dq_total} data quality issues that need attention.")
+
